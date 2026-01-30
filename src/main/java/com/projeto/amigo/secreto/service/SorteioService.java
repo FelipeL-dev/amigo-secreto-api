@@ -91,10 +91,6 @@ public class SorteioService {
             throw new RuntimeException("Sorteio já foi realizado.");
         }
 
-        if(pessoas.size() % 2 != 0){
-            throw new RuntimeException("Sorteio só pode ser realizado com número par de participantes");
-        }
-
         Collections.shuffle(pessoas);
 
         for(int i = 0; i < pessoas.size(); i++){
