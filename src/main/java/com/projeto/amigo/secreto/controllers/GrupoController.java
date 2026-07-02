@@ -114,9 +114,7 @@ public class GrupoController {
             @ApiResponse(responseCode = "404", description = "Pessoa ou grupo não encontrados"),
             @ApiResponse(responseCode = "400", description = "Pessoa já está associada ao grupo")
     })
-    public ResponseEntity<Void> adicionarPessoaAoGrupo(
-            @PathVariable Long grupoId,
-            @PathVariable Long pessoaId) {
+    public ResponseEntity<Void> adicionarPessoaAoGrupo(@PathVariable Long grupoId, @PathVariable Long pessoaId) {
         pessoaService.adicionarPessoaAGrupo(grupoId, pessoaId);
         return ResponseEntity.noContent().build();
     }
