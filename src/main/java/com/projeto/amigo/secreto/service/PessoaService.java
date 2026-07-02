@@ -21,20 +21,6 @@ public class PessoaService {
         this.pessoaRepository = repository;
     }
 
-    public PessoaDTO create(PessoaDTO dto){
-        Pessoa pessoa = new Pessoa();
-        pessoa.setNome(dto.getNome());
-        pessoa.setEmail(dto.getEmail());
-
-        if (dto.getGrupoIds() != null && !dto.getGrupoIds().isEmpty()) {
-            List<Grupo> grupos = grupoRepository.findAllById(dto.getGrupoIds());
-            pessoa.setGrupos(grupos);
-        }
-
-        pessoaRepository.save(pessoa);
-        return pessoa.mapToDto();
-    }
-
     public List<PessoaDTO> findAll(){
         return pessoaRepository.findAll().stream().map(Pessoa::mapToDto).toList();
     }
