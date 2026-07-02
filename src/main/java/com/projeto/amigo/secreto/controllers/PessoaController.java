@@ -41,16 +41,6 @@ public class PessoaController {
         return ResponseEntity.ok(pessoaService.findById(id));
     }
 
-    @Operation(summary = "Criar uma pessoa no sistema", description = "Cria uma pessoa no sistema, através das informações enviadas")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Pessoa criada com sucesso"),
-            @ApiResponse(responseCode = "500", description = "Erro interno do servidor"),
-            @ApiResponse(responseCode = "400", description = "Falha ao criar pessoa")
-    })
-    @PostMapping
-    public ResponseEntity<PessoaDTO> createPessoa(@Valid @RequestBody PessoaDTO dto){
-        return ResponseEntity.ok(pessoaService.create(dto));
-    }
 
     @Operation(summary = "Atualiza os dados de uma pessoa", description = "Edita as informações de uma pessoa existente, baseando-se no seu id")
     @ApiResponses({
