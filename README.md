@@ -342,9 +342,9 @@ Este é um projeto pessoal desenvolvido para fins de aprendizado e portfólio.
 
 ## 👨‍💻 Autor
 
-**COKINHOxo**
-- GitHub: [@COKINHOxo](https://github.com/COKINHOxo)
-- Projeto: [amigo-secreto-api](https://github.com/COKINHOxo/amigo-secreto-api)
+**Felipe Lopes**
+- GitHub: [@FelipeL-dev](https://github.com/FelipeL-dev)
+- Projeto: [amigo-secreto-api](https://github.com/FelipeL-dev/amigo-secreto-api)
 
 ## 🙏 Agradecimentos
 
