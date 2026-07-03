@@ -5,7 +5,6 @@ import com.projeto.amigo.secreto.service.ResultadoSorteioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,18 +18,6 @@ public class ResultadoSorteioController {
     public ResultadoSorteioController(ResultadoSorteioService resultadoSorteioService) {
         this.resultadoSorteioService = resultadoSorteioService;
     }
-
-    @Operation(summary = "Criar novo resultado de sorteio", description = "Cria um novo resultado de sorteio com base nas IDs enviadas")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Resultado criado com sucesso"),
-            @ApiResponse(responseCode = "400", description = "Requisição inválida"),
-            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
-    })
-    @PostMapping
-    public ResponseEntity<ResultadoSorteioDTO> createResultadoSorteio(@Valid @RequestBody ResultadoSorteioDTO dto){
-        return ResponseEntity.ok(resultadoSorteioService.createResultadoSorteio(dto));
-    }
-
     @Operation(summary = "Buscar resultados por grupo", description = "Retorna todos os resultados de sorteio de um determinado grupo")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Resultados retornados com sucesso"),
