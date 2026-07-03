@@ -2,8 +2,10 @@ package com.projeto.amigo.secreto.service;
 
 import com.projeto.amigo.secreto.dtos.AuthResponseDTO;
 import com.projeto.amigo.secreto.dtos.LoginRequestDTO;
+import com.projeto.amigo.secreto.dtos.RefreshRequestDto;
 import com.projeto.amigo.secreto.dtos.RegisterRequestDTO;
 import com.projeto.amigo.secreto.entities.Pessoa;
+import com.projeto.amigo.secreto.entities.RefreshToken;
 import com.projeto.amigo.secreto.entities.Usuario;
 import com.projeto.amigo.secreto.enums.Role;
 import com.projeto.amigo.secreto.repositories.PessoaRepository;
@@ -24,6 +26,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final RefreshTokenService refreshTokenService;
 
     public AuthResponseDTO register(RegisterRequestDTO request) {
         Pessoa pessoa = Pessoa.builder().nome(request.getNome()).email(request.getEmail()).build();
@@ -35,9 +38,10 @@ public class AuthService {
                 .role(Role.ROLE_USER)
                 .pessoa(pessoa)
                 .build();
-
         usuarioRepository.save(usuario);
-        return new AuthResponseDTO(jwtService.generateToken(usuario));
+        String accessToken = jwtService.generateToken(usuario);
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(usuario);
+        return new AuthResponseDTO(accessToken, refreshToken.getToken());
     }
 
     public AuthResponseDTO login(LoginRequestDTO request) {
@@ -46,8 +50,21 @@ public class AuthService {
         );
 
         Usuario usuario = usuarioRepository.findByEmail(request.getEmail())
-                .orElseThrow();
+                .orElseThrow(() -> new RuntimeException("email nao encontrado"));
 
-        return new AuthResponseDTO(jwtService.generateToken(usuario));
+        String accessToken = jwtService.generateToken(usuario);
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(usuario);
+
+        return new AuthResponseDTO(accessToken, refreshToken.getToken());
+    }
+
+    public AuthResponseDTO refresh(RefreshRequestDto request){
+        RefreshToken refreshToken= refreshTokenService.validateRefreshToken(request.getRefreshToken());
+        Usuario usuario = refreshToken.getUsuario();
+        String newAccessToken = jwtService.generateToken(usuario);
+
+        return new AuthResponseDTO(newAccessToken, refreshToken.getToken());
+
+
     }
 }

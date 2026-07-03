@@ -2,6 +2,7 @@ package com.projeto.amigo.secreto.controllers;
 
 import com.projeto.amigo.secreto.dtos.AuthResponseDTO;
 import com.projeto.amigo.secreto.dtos.LoginRequestDTO;
+import com.projeto.amigo.secreto.dtos.RefreshRequestDto;
 import com.projeto.amigo.secreto.dtos.RegisterRequestDTO;
 import com.projeto.amigo.secreto.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -42,5 +43,16 @@ public class AuthController {
     })
     public ResponseEntity<AuthResponseDTO> login(@RequestBody LoginRequestDTO request) {
         return ResponseEntity.ok(authService.login(request));
+    }
+
+    @PostMapping("/refresh")
+    @Operation(summary = "Renovar access token", description = "Recebe um refresh token e retorna um novo access token")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Token renovado com sucesso"),
+            @ApiResponse(responseCode = "403", description = "Refresh token inválido ou expirado"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
+    public ResponseEntity<AuthResponseDTO> refresh(@RequestBody RefreshRequestDto request) {
+        return ResponseEntity.ok(authService.refresh(request));
     }
 }
