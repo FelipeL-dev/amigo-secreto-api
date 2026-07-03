@@ -4,6 +4,8 @@ import com.projeto.amigo.secreto.dtos.GrupoDTO;
 import com.projeto.amigo.secreto.entities.Grupo;
 import com.projeto.amigo.secreto.entities.Pessoa;
 import com.projeto.amigo.secreto.entities.Usuario;
+import com.projeto.amigo.secreto.exceptions.NotFoundException;
+import com.projeto.amigo.secreto.exceptions.UnauthorizedException;
 import com.projeto.amigo.secreto.repositories.GrupoRepository;
 import com.projeto.amigo.secreto.repositories.PessoaRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class GrupoService {
@@ -33,7 +34,7 @@ public class GrupoService {
         grupo.setDono(usuario.getPessoa());
         grupoRepository.save(grupo);
 
-        Pessoa dono = pessoaRepository.findById(usuario.getPessoa().getId()).orElseThrow(() -> new RuntimeException("Pessoa nao encontrada"));
+        Pessoa dono = pessoaRepository.findById(usuario.getPessoa().getId()).orElseThrow(() -> new NotFoundException("Pessoa nao encontrada"));
         dono.getGrupos().add(grupo);
         pessoaRepository.save(dono);
         return grupo.mapToDto();
@@ -46,7 +47,7 @@ public class GrupoService {
     public List<GrupoDTO> findMeusGrupos(){
         Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        Pessoa pessoa = pessoaRepository.findById(usuario.getPessoa().getId()).orElseThrow(() -> new RuntimeException("Pessoa nao encontrada"));
+        Pessoa pessoa = pessoaRepository.findById(usuario.getPessoa().getId()).orElseThrow(() -> new NotFoundException("Pessoa nao encontrada"));
 
 
         return pessoa.getGrupos().stream().map(Grupo::mapToDto).toList();
@@ -54,7 +55,7 @@ public class GrupoService {
 
     public GrupoDTO findById(Long id){
         Grupo grupo = grupoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Grupo não encontrado"));
+                .orElseThrow(() -> new NotFoundException("Grupo não encontrado"));
 
         return grupo.mapToDto();
     }
@@ -63,10 +64,10 @@ public class GrupoService {
         Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         Grupo grupo = grupoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Grupo não encontrado"));
+                .orElseThrow(() -> new NotFoundException("Grupo não encontrado"));
 
         if (!grupo.getDono().getId().equals(usuario.getPessoa().getId())) {
-            throw new RuntimeException("Você não tem permissão para realizar essa ação");
+            throw new UnauthorizedException("Você não tem permissão para realizar essa ação");
         }
 
         grupoRepository.delete(grupo);
@@ -76,17 +77,12 @@ public class GrupoService {
 
         Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        Optional<Grupo> optionalGrupo = grupoRepository.findById(id);
+        Grupo grupo = grupoRepository.findById(id).orElseThrow(() -> new NotFoundException("grupo nao encontrado"));
 
-        if(optionalGrupo.isEmpty()){
-            throw new RuntimeException("Grupo não encontrado");
+        if (!grupo.getDono().getId().equals(usuario.getPessoa().getId())) {
+            throw new UnauthorizedException("Você não tem permissão para realizar essa ação");
         }
 
-        if (!optionalGrupo.get().getDono().getId().equals(usuario.getPessoa().getId())) {
-            throw new RuntimeException("Você não tem permissão para realizar essa ação");
-        }
-
-        Grupo grupo = optionalGrupo.get();
         grupo.updateGrupo(dto.getNome(), dto.getSorteado());
         grupoRepository.save(grupo);
 

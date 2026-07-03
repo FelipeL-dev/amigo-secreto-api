@@ -4,6 +4,9 @@ package com.projeto.amigo.secreto.service;
 import com.projeto.amigo.secreto.dtos.SorteioDTO;
 import com.projeto.amigo.secreto.entities.*;
 import com.projeto.amigo.secreto.enums.StatusSorteio;
+import com.projeto.amigo.secreto.exceptions.BusinessException;
+import com.projeto.amigo.secreto.exceptions.NotFoundException;
+import com.projeto.amigo.secreto.exceptions.UnauthorizedException;
 import com.projeto.amigo.secreto.repositories.GrupoRepository;
 import com.projeto.amigo.secreto.repositories.PessoaRepository;
 import com.projeto.amigo.secreto.repositories.ResultadoSorteioRepository;
@@ -33,7 +36,7 @@ public class SorteioService {
 
     public SorteioDTO create(SorteioDTO dto){
         Grupo grupo = grupoRepository.findById(dto.getGrupoId())
-                .orElseThrow(() -> new RuntimeException("Grupo não encontrado"));
+                .orElseThrow(() -> new NotFoundException("Grupo não encontrado"));
         dto.setStatus(StatusSorteio.EM_ANDAMENTO);
         dto.setDataSorteio(LocalDateTime.now());
         Sorteio sorteio = dto.mapToEntitie(grupo);
@@ -43,7 +46,7 @@ public class SorteioService {
 
     public SorteioDTO findById(long id){
         Sorteio sorteio = sorteioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Sorteio não encontrado"));
+                .orElseThrow(() -> new NotFoundException("Sorteio não encontrado"));
 
         return sorteio.mapToDto();
     }
@@ -55,10 +58,10 @@ public class SorteioService {
     public void delete(long id){
         Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Sorteio sorteio = sorteioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Sorteio não encontrado"));
+                .orElseThrow(() -> new NotFoundException("Sorteio não encontrado"));
 
         if (!sorteio.getGrupo().getDono().getId().equals(usuario.getPessoa().getId())) {
-            throw new RuntimeException("Você não tem permissão para realizar essa ação");
+            throw new UnauthorizedException("Você não tem permissão para realizar essa ação");
         }
         sorteioRepository.delete(sorteio);
     }
@@ -67,19 +70,19 @@ public class SorteioService {
         Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         Sorteio sorteio = sorteioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Sorteio não encontrado"));
+                .orElseThrow(() -> new NotFoundException("Sorteio não encontrado"));
 
         if (!sorteio.getGrupo().getDono().getId().equals(usuario.getPessoa().getId())) {
-            throw new RuntimeException("Você não tem permissão para realizar essa ação");
+            throw new UnauthorizedException("Você não tem permissão para realizar essa ação");
         }
 
         if (sorteio.getStatus() == StatusSorteio.FINALIZADO) {
-            throw new RuntimeException("Sorteio já está finalizado");
+            throw new BusinessException("Sorteio já está finalizado");
         }
         sorteio.setStatus(StatusSorteio.FINALIZADO);
 
         Grupo grupo = grupoRepository.findById(sorteio.getGrupo().getId())
-                .orElseThrow(() -> new RuntimeException("Grupo não encontrado"));
+                .orElseThrow(() -> new NotFoundException("Grupo não encontrado"));
         grupo.setSorteado(true);
         sorteioRepository.save(sorteio);
         grupoRepository.save(grupo);
@@ -91,20 +94,20 @@ public class SorteioService {
         Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         Sorteio sorteio = sorteioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Sorteio não encontrado"));
+                .orElseThrow(() -> new NotFoundException("Sorteio não encontrado"));
 
         if (!sorteio.getGrupo().getDono().getId().equals(usuario.getPessoa().getId())) {
-            throw new RuntimeException("Você não tem permissão para realizar essa ação");
+            throw new BusinessException("Você não tem permissão para realizar essa ação");
         }
 
         List<Pessoa> pessoas = pessoaRepository.findAllByGrupos_Id(sorteio.getGrupo().getId());
 
         if (pessoas.size() < 2) {
-            throw new RuntimeException("É necessário pelo menos 2 pessoas no grupo para realizar o sorteio.");
+            throw new BusinessException("É necessário pelo menos 2 pessoas no grupo para realizar o sorteio.");
         }
 
         if (sorteio.getStatus() == StatusSorteio.FINALIZADO) {
-            throw new RuntimeException("Sorteio já foi realizado.");
+            throw new BusinessException("Sorteio já foi realizado.");
         }
 
         Collections.shuffle(pessoas);

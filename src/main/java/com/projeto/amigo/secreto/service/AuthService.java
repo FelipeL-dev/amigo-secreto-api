@@ -8,6 +8,7 @@ import com.projeto.amigo.secreto.entities.Pessoa;
 import com.projeto.amigo.secreto.entities.RefreshToken;
 import com.projeto.amigo.secreto.entities.Usuario;
 import com.projeto.amigo.secreto.enums.Role;
+import com.projeto.amigo.secreto.exceptions.NotFoundException;
 import com.projeto.amigo.secreto.repositories.PessoaRepository;
 import com.projeto.amigo.secreto.repositories.UsuarioRepository;
 import com.projeto.amigo.secreto.security.JwtService;
@@ -50,7 +51,7 @@ public class AuthService {
         );
 
         Usuario usuario = usuarioRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("email nao encontrado"));
+                .orElseThrow(() -> new NotFoundException("email nao encontrado"));
 
         String accessToken = jwtService.generateToken(usuario);
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(usuario);

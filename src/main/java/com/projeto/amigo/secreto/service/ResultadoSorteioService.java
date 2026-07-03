@@ -4,6 +4,8 @@ import com.projeto.amigo.secreto.dtos.ResultadoSorteioDTO;
 import com.projeto.amigo.secreto.entities.Pessoa;
 import com.projeto.amigo.secreto.entities.ResultadoSorteio;
 import com.projeto.amigo.secreto.entities.Sorteio;
+import com.projeto.amigo.secreto.exceptions.BusinessException;
+import com.projeto.amigo.secreto.exceptions.NotFoundException;
 import com.projeto.amigo.secreto.repositories.PessoaRepository;
 import com.projeto.amigo.secreto.repositories.ResultadoSorteioRepository;
 import com.projeto.amigo.secreto.repositories.SorteioRepository;
@@ -27,15 +29,15 @@ public class ResultadoSorteioService {
     @Transactional
     public ResultadoSorteioDTO createResultadoSorteio(ResultadoSorteioDTO dto){
         Pessoa sorteador = pessoaRepository.findById(dto.getSorteador_id())
-                .orElseThrow(() -> new RuntimeException("Sorteador não encontrado"));
+                .orElseThrow(() -> new NotFoundException("Sorteador não encontrado"));
         Pessoa sorteado = pessoaRepository.findById(dto.getSorteado_id())
-                .orElseThrow(() -> new RuntimeException("Sorteado não encontrado"));
+                .orElseThrow(() -> new NotFoundException("Sorteado não encontrado"));
         Sorteio sorteio = sorteioRepository.findById(dto.getSorteio_id())
-                .orElseThrow(() -> new RuntimeException("Sorteio não encontrado"));
+                .orElseThrow(() -> new NotFoundException("Sorteio não encontrado"));
 
         resultadoSorteioRepository.findBySorteadorIdAndSorteioId(sorteador.getId(), sorteio.getId())
                 .ifPresent(r -> {
-                    throw new RuntimeException("Resultado para esse sorteador e sorteio já existe.");
+                    throw new BusinessException("Resultado para esse sorteador e sorteio já existe.");
                 });
 
         ResultadoSorteio resultadoSorteio = dto.mapToEntite(sorteio, sorteador, sorteado);
@@ -50,13 +52,13 @@ public class ResultadoSorteioService {
 
     public ResultadoSorteioDTO findById(long id){
         ResultadoSorteio resultadoSorteio = resultadoSorteioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Resultado de sorteio não encontrado"));
+                .orElseThrow(() -> new NotFoundException("Resultado de sorteio não encontrado"));
         return resultadoSorteio.mapToDto();
     }
 
     public void deleteResultadoSorteio(long id){
         ResultadoSorteio resultadoSorteio = resultadoSorteioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Resultado de sorteio não encontrado"));
+                .orElseThrow(() -> new NotFoundException("Resultado de sorteio não encontrado"));
         resultadoSorteioRepository.delete((resultadoSorteio));
     }
 

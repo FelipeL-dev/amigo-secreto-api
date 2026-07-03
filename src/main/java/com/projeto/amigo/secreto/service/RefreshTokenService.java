@@ -2,6 +2,8 @@ package com.projeto.amigo.secreto.service;
 
 import com.projeto.amigo.secreto.entities.RefreshToken;
 import com.projeto.amigo.secreto.entities.Usuario;
+import com.projeto.amigo.secreto.exceptions.BusinessException;
+import com.projeto.amigo.secreto.exceptions.NotFoundException;
 import com.projeto.amigo.secreto.repositories.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,7 @@ public class RefreshTokenService {
     @Transactional
     public RefreshToken createRefreshToken(Usuario usuario){
         refreshTokenRepository.deleteByUsuario(usuario);
+        refreshTokenRepository.flush();
 
         RefreshToken refreshToken = RefreshToken.builder().usuario(usuario).token(UUID.randomUUID().toString()).expiryDate(Instant.now().plusSeconds(REFRESH_TOKEN_EXPIRATION)).build();
 
@@ -27,11 +30,11 @@ public class RefreshTokenService {
     }
 
     public RefreshToken validateRefreshToken(String token){
-        RefreshToken refreshToken= refreshTokenRepository.findByToken(token).orElseThrow(() -> new RuntimeException("RefreshToken nao encontrado"));
+        RefreshToken refreshToken= refreshTokenRepository.findByToken(token).orElseThrow(() -> new NotFoundException("RefreshToken nao encontrado"));
 
         if(refreshToken.getExpiryDate().isBefore(Instant.now())){
             refreshTokenRepository.delete(refreshToken);
-            throw new RuntimeException("Refresh token expirado, faca login novamente");
+            throw new BusinessException("Refresh token expirado, faca login novamente");
         }
         return refreshToken;
     }
