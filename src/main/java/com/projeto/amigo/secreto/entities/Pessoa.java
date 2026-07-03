@@ -17,7 +17,7 @@ import java.util.List;
 public class Pessoa {
     @Id
     @GeneratedValue
-    long id;
+    Long id;
     String nome;
     String email;
 
@@ -29,10 +29,6 @@ public class Pessoa {
     )
     private List<Grupo> grupos;
 
-    public Pessoa(int i, String b) {
-        this.id = i;
-        this.nome = b;
-    }
 
     public PessoaDTO mapToDto() {
         PessoaDTO dto = new PessoaDTO();

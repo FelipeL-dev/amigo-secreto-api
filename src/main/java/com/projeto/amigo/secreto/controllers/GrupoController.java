@@ -62,7 +62,7 @@ public class GrupoController {
     }
 
 
-    @Operation(summary = "Excluir uma pessoa do sistema", description = "Deleta uma pessoa do sistema, baseando-se no seu id")
+    @Operation(summary = "Excluir um grupo do sistema", description = "Deleta um grupo do sistema, baseando-se no seu id")
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Grupo deletado com sucesso"),
             @ApiResponse(responseCode = "404", description = "Grupo não encontrado"),
@@ -117,6 +117,17 @@ public class GrupoController {
     public ResponseEntity<Void> adicionarPessoaAoGrupo(@PathVariable Long grupoId, @PathVariable Long pessoaId) {
         pessoaService.adicionarPessoaAGrupo(grupoId, pessoaId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/meus")
+    @Operation(summary = "Listar meus grupos", description = "Retorna os grupos do usuário logado")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso"),
+            @ApiResponse(responseCode = "401", description = "Usuário não autenticado"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
+    public ResponseEntity<List<GrupoDTO>> getMeusGrupos() {
+        return ResponseEntity.ok(grupoService.findMeusGrupos());
     }
 
 }

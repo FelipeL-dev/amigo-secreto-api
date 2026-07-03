@@ -2,15 +2,13 @@ package com.projeto.amigo.secreto.service;
 
 
 import com.projeto.amigo.secreto.dtos.SorteioDTO;
-import com.projeto.amigo.secreto.entities.Grupo;
-import com.projeto.amigo.secreto.entities.Pessoa;
-import com.projeto.amigo.secreto.entities.ResultadoSorteio;
-import com.projeto.amigo.secreto.entities.Sorteio;
+import com.projeto.amigo.secreto.entities.*;
 import com.projeto.amigo.secreto.enums.StatusSorteio;
 import com.projeto.amigo.secreto.repositories.GrupoRepository;
 import com.projeto.amigo.secreto.repositories.PessoaRepository;
 import com.projeto.amigo.secreto.repositories.ResultadoSorteioRepository;
 import com.projeto.amigo.secreto.repositories.SorteioRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,15 +53,26 @@ public class SorteioService {
     }
 
     public void delete(long id){
+        Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Sorteio sorteio = sorteioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Sorteio não encontrado"));
 
+        if (!sorteio.getGrupo().getDono().getId().equals(usuario.getPessoa().getId())) {
+            throw new RuntimeException("Você não tem permissão para realizar essa ação");
+        }
         sorteioRepository.delete(sorteio);
     }
 
     public void finalizarSorteio(Long id) {
+        Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         Sorteio sorteio = sorteioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Sorteio não encontrado"));
+
+        if (!sorteio.getGrupo().getDono().getId().equals(usuario.getPessoa().getId())) {
+            throw new RuntimeException("Você não tem permissão para realizar essa ação");
+        }
+
         if (sorteio.getStatus() == StatusSorteio.FINALIZADO) {
             throw new RuntimeException("Sorteio já está finalizado");
         }
@@ -79,8 +88,15 @@ public class SorteioService {
     @Transactional
     public void realizarSorteio(Long id){
 
+        Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         Sorteio sorteio = sorteioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Sorteio não encontrado"));
+
+        if (!sorteio.getGrupo().getDono().getId().equals(usuario.getPessoa().getId())) {
+            throw new RuntimeException("Você não tem permissão para realizar essa ação");
+        }
+
         List<Pessoa> pessoas = pessoaRepository.findAllByGrupos_Id(sorteio.getGrupo().getId());
 
         if (pessoas.size() < 2) {

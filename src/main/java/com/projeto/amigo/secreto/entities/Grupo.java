@@ -23,6 +23,9 @@ public class Grupo {
     String nome;
     LocalDate dataCriacao;
     Boolean sorteado;
+    @ManyToOne
+    @JoinColumn(name = "dono_id")
+    private Pessoa dono;
     @OneToMany(mappedBy = "grupo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Sorteio> sorteios;
     @ManyToMany(mappedBy = "grupos")
