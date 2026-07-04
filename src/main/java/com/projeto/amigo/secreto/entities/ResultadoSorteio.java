@@ -3,6 +3,7 @@ package com.projeto.amigo.secreto.entities;
 import com.projeto.amigo.secreto.dtos.ResultadoSorteioDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class ResultadoSorteio {
     @Id
     @GeneratedValue

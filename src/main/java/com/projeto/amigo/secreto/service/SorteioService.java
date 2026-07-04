@@ -26,12 +26,13 @@ public class SorteioService {
     private final GrupoRepository grupoRepository;
     private final PessoaRepository pessoaRepository;
     private final ResultadoSorteioRepository resultadoRepository;
-
-    public SorteioService(SorteioRepository sorteioRepository, GrupoRepository grupoRepository, PessoaRepository pessoaRepository, ResultadoSorteioRepository resultadoRepository) {
+    private final EmailService emailService;
+    public SorteioService(SorteioRepository sorteioRepository, GrupoRepository grupoRepository, PessoaRepository pessoaRepository, ResultadoSorteioRepository resultadoRepository, EmailService emailService) {
         this.sorteioRepository = sorteioRepository;
         this.grupoRepository = grupoRepository;
         this.pessoaRepository = pessoaRepository;
         this.resultadoRepository = resultadoRepository;
+        this.emailService = emailService;
     }
 
     public SorteioDTO create(SorteioDTO dto){
@@ -116,10 +117,8 @@ public class SorteioService {
             Pessoa sorteador = pessoas.get(i);
             Pessoa sorteado = pessoas.get((i+1) % pessoas.size());
 
-            ResultadoSorteio resultado = new ResultadoSorteio();
-            resultado.setSorteador(sorteador);
-            resultado.setSorteado(sorteado);
-            resultado.setSorteio(sorteio);
+            ResultadoSorteio resultado = ResultadoSorteio.builder().sorteador(sorteador).sorteado(sorteado).sorteio(sorteio).build();
+            emailService.enviarResultadoSorteio(sorteador.getEmail(), sorteador.getNome(), sorteado.getNome());
             resultadoRepository.save(resultado);
         }
     }
