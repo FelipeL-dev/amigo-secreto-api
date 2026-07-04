@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/grupos")
@@ -82,10 +83,8 @@ public class GrupoController {
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<GrupoDTO> updateProduct(@PathVariable Long id, @Valid @RequestBody GrupoDTO dto) {
-        GrupoDTO existing = grupoService.update(dto, id);
-
-        return ResponseEntity.ok(existing);
+    public ResponseEntity<GrupoDTO> updateGrupo(@PathVariable Long id, @RequestBody Map<String, String> body) {
+        return ResponseEntity.ok(grupoService.update(id, body.get("nome")));
     }
 
     @Operation(summary = "Gerar convite de grupo", description = "Gera o link do convite para um grupo")

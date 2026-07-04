@@ -74,7 +74,7 @@ public class GrupoService {
         grupoRepository.delete(grupo);
     }
 
-    public GrupoDTO update(GrupoDTO dto, Long id){
+    public GrupoDTO update(Long id, String nome){
 
         Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
@@ -84,7 +84,7 @@ public class GrupoService {
             throw new UnauthorizedException("Você não tem permissão para realizar essa ação");
         }
 
-        grupo.updateGrupo(dto.getNome(), dto.getSorteado());
+        grupo.updateGrupo(nome);
         grupoRepository.save(grupo);
 
         return grupo.mapToDto();
