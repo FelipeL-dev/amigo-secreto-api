@@ -281,6 +281,7 @@ Authorization: Bearer {token}
 ```
 
 ## 🏗️ Estrutura do Projeto
+```
 amigo-secreto-api/
 ├── src/main/java/com/projeto/amigo/secreto/
 │   ├── controllers/        # Controladores REST
@@ -293,6 +294,7 @@ amigo-secreto-api/
 │   ├── handlers/           # Handler global de exceções
 │   └── security/           # Configuração JWT e Spring Security
 └── pom.xml
+```
 
 ## 🔄 Fluxo de Uso
 
