@@ -28,7 +28,7 @@ Esta API permite criar e gerenciar eventos de Amigo Secreto de forma organizada 
 
 ### 1. Clone o repositório
 ```bash
-git clone https://github.com/COKINHOxo/amigo-secreto-api.git
+git clone https://github.com/FelipeL-dev/amigo-secreto-api.git
 cd amigo-secreto-api
 ```
 
