@@ -42,8 +42,7 @@ public class Grupo {
         return dto;
     }
 
-    public void updateGrupo(String nome, Boolean sorteado){
+    public void updateGrupo(String nome){
         this.nome = nome;
-        this.sorteado = sorteado;
     }
 }
