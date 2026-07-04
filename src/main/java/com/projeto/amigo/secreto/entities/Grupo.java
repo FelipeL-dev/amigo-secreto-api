@@ -23,6 +23,8 @@ public class Grupo {
     String nome;
     LocalDate dataCriacao;
     Boolean sorteado;
+    @Column(unique = true)
+    String tokenConvite;
     @ManyToOne
     @JoinColumn(name = "dono_id")
     private Pessoa dono;

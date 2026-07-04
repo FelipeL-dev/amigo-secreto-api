@@ -88,6 +88,28 @@ public class GrupoController {
         return ResponseEntity.ok(existing);
     }
 
+    @Operation(summary = "Gerar convite de grupo", description = "Gera o link do convite para um grupo")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Convite gerado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Falha na geracao do convite"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
+    @PostMapping("/{id}/convite")
+    public ResponseEntity<String> createConvite(@PathVariable Long id) {
+        return ResponseEntity.ok(grupoService.gerarConviteToken(id));
+    }
+
+    @Operation(summary = "Adicionar pessoa ao grupo pelo link de convite", description = "adiciona a pessoa ao grupo pelo convite")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Pessoa adicionada com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Falha do convite"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
+    @PostMapping("/entrar/{token}")
+    public ResponseEntity<String> addPessoaGrupoInv(@PathVariable String token) {
+        grupoService.entrarNoGrupo(token);
+        return ResponseEntity.ok("Voce entoru no grupo com sucesso!");
+    }
 
     @Operation(summary = "Listar pessoas presentes em um grupo", description = "Lista as pessoas presentes em um grupo especificado pelo id do grupo.")
     @GetMapping("/{grupoId}/pessoas")

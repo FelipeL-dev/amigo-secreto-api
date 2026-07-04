@@ -4,6 +4,7 @@ import com.projeto.amigo.secreto.dtos.GrupoDTO;
 import com.projeto.amigo.secreto.entities.Grupo;
 import com.projeto.amigo.secreto.entities.Pessoa;
 import com.projeto.amigo.secreto.entities.Usuario;
+import com.projeto.amigo.secreto.exceptions.BusinessException;
 import com.projeto.amigo.secreto.exceptions.NotFoundException;
 import com.projeto.amigo.secreto.exceptions.UnauthorizedException;
 import com.projeto.amigo.secreto.repositories.GrupoRepository;
@@ -13,12 +14,12 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class GrupoService {
     private final GrupoRepository grupoRepository;
     private final PessoaRepository pessoaRepository;
-
     public GrupoService(GrupoRepository repository, PessoaRepository pessoaRepository) {
         this.grupoRepository = repository;
         this.pessoaRepository = pessoaRepository;
@@ -91,6 +92,38 @@ public class GrupoService {
 
     public List<GrupoDTO> findGruposSorteados(){
         return grupoRepository.findBySorteado(true).stream().map(Grupo::mapToDto).toList();
+    }
+
+    public String gerarConviteToken(Long id){
+        Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        Grupo grupo = grupoRepository.findById(id).orElseThrow(() -> new NotFoundException("grupo nao encontrado"));
+
+        if (!grupo.getDono().getId().equals(usuario.getPessoa().getId())) {
+            throw new UnauthorizedException("Você não tem permissão para realizar essa ação");
+        }
+
+        grupo.setTokenConvite(UUID.randomUUID().toString());
+        grupoRepository.save(grupo);
+        return "localhost:8080/api/grupos/entrar/" + grupo.getTokenConvite();
+    }
+
+    public void entrarNoGrupo(String token){
+        Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        Grupo grupo = grupoRepository.findByTokenConvite(token).orElseThrow(() -> new NotFoundException("Grupo nao encontrado"));
+
+        Pessoa pessoa = pessoaRepository.findById(usuario.getPessoa().getId()).orElseThrow(() -> new NotFoundException("Pessoa nao encontrada"));
+
+
+
+        if(pessoa.getGrupos().contains(grupo)){
+            throw new BusinessException("Você já faz parte desse grupo");
+        }
+
+        pessoa.getGrupos().add(grupo);
+        pessoaRepository.save(pessoa);
+
     }
 
 }
