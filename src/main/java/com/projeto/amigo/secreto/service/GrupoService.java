@@ -105,7 +105,7 @@ public class GrupoService {
 
         grupo.setTokenConvite(UUID.randomUUID().toString());
         grupoRepository.save(grupo);
-        return "localhost:8080/api/grupos/entrar/" + grupo.getTokenConvite();
+        return grupo.getTokenConvite();
     }
 
     public void entrarNoGrupo(String token){
