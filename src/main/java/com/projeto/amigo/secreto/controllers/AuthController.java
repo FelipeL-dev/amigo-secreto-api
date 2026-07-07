@@ -1,9 +1,6 @@
 package com.projeto.amigo.secreto.controllers;
 
-import com.projeto.amigo.secreto.dtos.AuthResponseDTO;
-import com.projeto.amigo.secreto.dtos.LoginRequestDTO;
-import com.projeto.amigo.secreto.dtos.RefreshRequestDto;
-import com.projeto.amigo.secreto.dtos.RegisterRequestDTO;
+import com.projeto.amigo.secreto.dtos.*;
 import com.projeto.amigo.secreto.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -54,5 +51,29 @@ public class AuthController {
     })
     public ResponseEntity<AuthResponseDTO> refresh(@RequestBody RefreshRequestDto request) {
         return ResponseEntity.ok(authService.refresh(request));
+    }
+
+    @PostMapping("/verificar")
+    @Operation(summary = "Verificar email", description = "Verifica o email do usuário pelo código recebido")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Email verificado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Código inválido ou expirado"),
+            @ApiResponse(responseCode = "404", description = "Código não encontrado")
+    })
+    public ResponseEntity<Void> verificarEmail(@RequestBody VerificarEmailDto dto) {
+        authService.verificarEmail(dto.getCodigo());
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/reenviar-verificacao")
+    @Operation(summary = "Reenviar código de verificação")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Código reenviado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Email já verificado"),
+            @ApiResponse(responseCode = "404", description = "Usuário não encontrado")
+    })
+    public ResponseEntity<Void> reenviarVerificacao(@RequestBody ReenviarEmailDto dto) {
+        authService.reenviarCodigoVerificacao(dto.getEmail());
+        return ResponseEntity.ok().build();
     }
 }

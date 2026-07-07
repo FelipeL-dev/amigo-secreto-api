@@ -10,6 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -23,6 +24,12 @@ public class Usuario implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
+
+    @Column(nullable = false)
+    private Boolean emailVerificado;
+
+    private String codigoVerificacao;
+    private LocalDateTime codigoVerificacaoExpiracao;
 
     @Column(unique = true, nullable = false)
     private String email;

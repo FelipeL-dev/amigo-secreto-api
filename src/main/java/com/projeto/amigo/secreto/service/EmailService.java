@@ -25,4 +25,16 @@ public class EmailService {
 
         mailSender.send(message);
     }
+
+    public void enviarCodigoVerificacao(String email, String nome, String codigo){
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject("Verificação de email - " + codigo);
+        message.setText(
+                "Olá, " + nome + "!\n\n" +
+                        "Seu código de verificação é: " + codigo + "\n\n" +
+                        "Digite esse código no site para ativar sua conta."
+        );
+        mailSender.send(message);
+    }
 }
