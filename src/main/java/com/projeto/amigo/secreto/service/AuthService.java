@@ -112,4 +112,29 @@ public class AuthService {
 
         emailService.enviarCodigoVerificacao(email, usuario.getPessoa().getNome(), codigo);
     }
+
+    public void enviarCodigoRecSenha(String email) {
+        Usuario usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("Usuário não encontrado"));
+
+        String codigo = String.format("%06d", new Random().nextInt(999999));
+        usuario.setCodigoRedefinicaoSenha(codigo);
+        usuario.setCodigoRedefinicaoExpiracao(LocalDateTime.now().plusMinutes(10));
+        usuarioRepository.save(usuario);
+
+        emailService.enviarCodigoRecSenha(email, usuario.getPessoa().getNome(), codigo);
+    }
+
+    public void redefinirSenha(String codigo, String email, String senha){
+        Usuario usuario = usuarioRepository.findByEmailAndCodigoRedefinicaoSenha(email, codigo ).orElseThrow(() -> new NotFoundException("Código inválido."));
+
+        if (usuario.getCodigoRedefinicaoExpiracao().isBefore(LocalDateTime.now())){
+            throw new BusinessException("Codigo expirado");
+        }
+
+        usuario.setPassword(passwordEncoder.encode(senha));
+        usuario.setCodigoRedefinicaoSenha(null);
+        usuario.setCodigoRedefinicaoExpiracao(null);
+        usuarioRepository.save(usuario);
+    }
 }

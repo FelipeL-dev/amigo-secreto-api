@@ -76,4 +76,28 @@ public class AuthController {
         authService.reenviarCodigoVerificacao(dto.getEmail());
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/esqueceu-senha")
+    @Operation(summary = "Recebe email, gera código de recuperacao de senha e envia")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Código enviado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Email já verificado"),
+            @ApiResponse(responseCode = "404", description = "Email não encontrado")
+    })
+    public ResponseEntity<Void> esqueceuSenha(@RequestBody EsqueceuSenhaDTO dto){
+        authService.enviarCodigoRecSenha(dto.getEmail());
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/redefinir-senha")
+    @Operation(summary = "Recebe codigo, email e nova senha")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Código enviado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Código inválido ou expirado / senha inválida."),
+            @ApiResponse(responseCode = "404", description = "Usuário não encontrado.")
+    })
+    public ResponseEntity<Void> redefinirSenha(@RequestBody @Valid RedefinirSenhaDTO dto){
+        authService.redefinirSenha(dto.getCodigo(), dto.getEmail(), dto.getSenha());
+        return ResponseEntity.ok().build();
+    }
 }

@@ -31,6 +31,9 @@ public class Usuario implements UserDetails {
     private String codigoVerificacao;
     private LocalDateTime codigoVerificacaoExpiracao;
 
+    private String codigoRedefinicaoSenha;
+    private LocalDateTime codigoRedefinicaoExpiracao;
+
     @Column(unique = true, nullable = false)
     private String email;
 

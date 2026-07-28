@@ -37,4 +37,16 @@ public class EmailService {
         );
         mailSender.send(message);
     }
+
+    public void enviarCodigoRecSenha(String email, String nome, String codigo){
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject("Recuperacao de senha - " +codigo);
+        message.setText(
+                "Olá, " + nome + "!\n\n" +
+                        "Seu código de recuperacao de senha é: " + codigo + "\n\n" +
+                        "Digite esse código no site para ativar sua conta."
+        );
+        mailSender.send(message);
+    }
 }
