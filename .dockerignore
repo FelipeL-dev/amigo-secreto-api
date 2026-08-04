@@ -1,0 +1,17 @@
+# Git
+.git
+.gitignore
+
+# IntelliJ
+.idea/
+
+# Maven
+target/
+
+# Logs
+*.log
+logs/
+
+# Sistema operacional
+.DS_Store
+Thumbs.db

@@ -1,0 +1,42 @@
+services:
+
+  postgres:
+    image: postgres:17
+    container_name: amigo-secreto-db
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: amigo_secreto
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d amigo_secreto"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    container_name: amigo-secreto-api
+    restart: unless-stopped
+    working_dir: /app
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    ports:
+      - "8080:8080"
+
+    env_file:
+      - .env
+
+volumes:
+  postgres_data:
