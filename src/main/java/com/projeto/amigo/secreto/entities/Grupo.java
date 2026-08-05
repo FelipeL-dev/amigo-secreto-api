@@ -4,6 +4,7 @@ package com.projeto.amigo.secreto.entities;
 import com.projeto.amigo.secreto.dtos.GrupoDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,6 +16,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Grupo {
     @Id
     @GeneratedValue
