@@ -3,9 +3,7 @@ package com.projeto.amigo.secreto.service;
 import com.projeto.amigo.secreto.dtos.ResultadoSorteioDTO;
 import com.projeto.amigo.secreto.entities.ResultadoSorteio;
 import com.projeto.amigo.secreto.exceptions.NotFoundException;
-import com.projeto.amigo.secreto.repositories.PessoaRepository;
 import com.projeto.amigo.secreto.repositories.ResultadoSorteioRepository;
-import com.projeto.amigo.secreto.repositories.SorteioRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,7 +13,7 @@ public class ResultadoSorteioService {
     private final ResultadoSorteioRepository resultadoSorteioRepository;
 
 
-    public ResultadoSorteioService(ResultadoSorteioRepository resultadoSorteioRepository, SorteioRepository sorteioRepository, PessoaRepository pessoaRepository) {
+    public ResultadoSorteioService(ResultadoSorteioRepository resultadoSorteioRepository) {
         this.resultadoSorteioRepository = resultadoSorteioRepository;
     }
 

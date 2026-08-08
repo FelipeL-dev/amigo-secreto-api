@@ -68,8 +68,7 @@ public class GrupoServiceTest {
 
         mockUsuarioAutenticado(usuario);
 
-        GrupoDTO dto = new GrupoDTO();
-        dto.setNome("Grupo Teste");
+        GrupoDTO dto = GrupoDTO.builder().nome("Grupo Teste").build();
 
         when(pessoaRepository.findById(1L))
                 .thenReturn(Optional.of(pessoa));
@@ -98,7 +97,7 @@ public class GrupoServiceTest {
                 .build();
 
        mockUsuarioAutenticado(usuario);
-        GrupoDTO dto = new GrupoDTO();
+        GrupoDTO dto = GrupoDTO.builder().build();
         when(pessoaRepository.findById(any())).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class , () -> grupoService.create(dto));

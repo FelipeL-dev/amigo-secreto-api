@@ -4,6 +4,7 @@ import com.projeto.amigo.secreto.dtos.SorteioDTO;
 import com.projeto.amigo.secreto.enums.StatusSorteio;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,6 +15,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Sorteio {
     @Id @GeneratedValue
     long id;
@@ -29,14 +31,20 @@ public class Sorteio {
     @Enumerated(EnumType.STRING)
     private StatusSorteio status;
 
-    public SorteioDTO mapToDto(){
-        SorteioDTO dto = new SorteioDTO();
-        dto.setId(this.getId());
-        if (this.getGrupo() != null){
-            dto.setGrupoId(this.getGrupo().getId());
+    public SorteioDTO mapToDto() {
+        if (this.getGrupo() != null) {
+            return SorteioDTO.builder()
+                    .id(this.getId())
+                    .status(this.getStatus())
+                    .dataSorteio(this.getDataSorteio())
+                    .grupoId(this.getGrupo().getId())
+                    .build();
         }
-        dto.setStatus(this.getStatus());
-        dto.setDataSorteio(this.getDataSorteio());
-        return dto;
+
+        return SorteioDTO.builder()
+                .id(this.getId())
+                .status(this.getStatus())
+                .dataSorteio(this.getDataSorteio())
+                .build();
     }
 }

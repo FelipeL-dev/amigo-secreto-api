@@ -6,12 +6,14 @@ import com.projeto.amigo.secreto.entities.Grupo;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 import lombok.Data;
 
 
 import java.time.LocalDate;
 
 @Data
+@Builder
 public class GrupoDTO {
     private long id;
 

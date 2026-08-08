@@ -36,12 +36,7 @@ public class Grupo {
     private List<Pessoa> pessoas;
 
     public GrupoDTO mapToDto(){
-        GrupoDTO dto = new GrupoDTO();
-        dto.setId(this.getId());
-        dto.setNome(this.getNome());
-        dto.setDataCriacao(this.getDataCriacao());
-        dto.setSorteado(this.getSorteado());
-        return dto;
+        return GrupoDTO.builder().id(this.getId()).nome(this.getNome()).dataCriacao(this.getDataCriacao()).sorteado(this.getSorteado()).build();
     }
 
     public void updateGrupo(String nome){

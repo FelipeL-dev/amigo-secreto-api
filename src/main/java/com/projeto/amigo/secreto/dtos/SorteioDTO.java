@@ -6,10 +6,12 @@ import com.projeto.amigo.secreto.entities.Grupo;
 import com.projeto.amigo.secreto.entities.Sorteio;
 import com.projeto.amigo.secreto.enums.StatusSorteio;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
+@Builder
 public class SorteioDTO {
     private long id;
 
