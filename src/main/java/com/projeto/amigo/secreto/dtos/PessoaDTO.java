@@ -3,11 +3,13 @@ package com.projeto.amigo.secreto.dtos;
 import com.projeto.amigo.secreto.entities.Grupo;
 import com.projeto.amigo.secreto.entities.Pessoa;
 import jakarta.validation.constraints.*;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
+@Builder
 public class PessoaDTO {
     private long id;
 

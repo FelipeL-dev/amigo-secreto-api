@@ -31,10 +31,7 @@ public class Pessoa {
 
 
     public PessoaDTO mapToDto() {
-        PessoaDTO dto = new PessoaDTO();
-        dto.setId(this.getId());
-        dto.setNome(this.getNome());
-        dto.setEmail(this.getEmail());
+        PessoaDTO dto = PessoaDTO.builder().email(this.getEmail()).id(this.getId()).nome(this.getNome()).build();
 
         if (this.getGrupos() != null) {
             dto.setGrupoIds(this.getGrupos().stream()
