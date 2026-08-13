@@ -73,6 +73,9 @@ public class PessoaServiceTest {
         Pessoa pessoa = Pessoa.builder().nome("teste").id(1L).build();
 
         when(pessoaRepository.findById(1L)).thenReturn(Optional.of(pessoa));
+
+        pessoaService.delete(1L);
+        verify(pessoaRepository).delete(pessoa);
     }
 
     @Test
@@ -88,9 +91,7 @@ public class PessoaServiceTest {
 
         when(pessoaRepository.findById(1L)).thenReturn(Optional.of(pessoa));
 
-        PessoaDTO dto = new PessoaDTO();
-        dto.setNome("teste2");
-        dto.setEmail("teste2@email.com");
+        PessoaDTO dto = PessoaDTO.builder().nome("teste2").email("teste2@email.com").build();
         pessoaService.update(dto, 1L);
 
         verify(pessoaRepository).save(pessoa);
@@ -100,7 +101,7 @@ public class PessoaServiceTest {
 
     @Test
     void deveLancarNotFoundExceptionAoAtualizarPessoa(){
-        PessoaDTO dto = new PessoaDTO();
+        PessoaDTO dto = PessoaDTO.builder().build();
         when(pessoaRepository.findById(any())).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> pessoaService.update(dto, any()));
