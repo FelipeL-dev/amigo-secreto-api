@@ -30,8 +30,7 @@ public class ResultadoSorteio {
     Pessoa sorteado;
 
     public ResultadoSorteioDTO mapToDto(){
-        ResultadoSorteioDTO dto = new ResultadoSorteioDTO();
-        dto.setId(this.getId());
+        ResultadoSorteioDTO dto = ResultadoSorteioDTO.builder().id(this.getId()).build();
         if (this.getSorteio() != null){
             dto.setSorteio_id(this.getSorteio().getId());
         }

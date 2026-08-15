@@ -5,9 +5,11 @@ import com.projeto.amigo.secreto.entities.Pessoa;
 import com.projeto.amigo.secreto.entities.ResultadoSorteio;
 import com.projeto.amigo.secreto.entities.Sorteio;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class ResultadoSorteioDTO {
     private long id;
 
