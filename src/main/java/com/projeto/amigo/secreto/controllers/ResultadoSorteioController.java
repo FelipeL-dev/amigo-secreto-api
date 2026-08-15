@@ -18,7 +18,7 @@ public class ResultadoSorteioController {
     public ResultadoSorteioController(ResultadoSorteioService resultadoSorteioService) {
         this.resultadoSorteioService = resultadoSorteioService;
     }
-    @Operation(summary = "Buscar resultados por grupo", description = "Retorna todos os resultados de sorteio de um determinado grupo")
+    @Operation(summary = "Buscar resultados por sorteio", description = "Retorna todos os resultados de sorteio de um determinado grupo")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Resultados retornados com sucesso"),
             @ApiResponse(responseCode = "404", description = "Grupo não encontrado"),
